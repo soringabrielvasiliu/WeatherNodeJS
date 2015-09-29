@@ -11,7 +11,7 @@ var MongoClient = require('mongodb').MongoClient;
 var apiKey = 'f117b20a12efc3c4c456d7dd24189';
 
 // Connect to the db
-MongoClient.connect("mongodb://localhost:27017/usersdb", function(err, database) {
+MongoClient.connect("mongodb://localhost:27017/weather", function(err, database) {
   if(err) { 
     return console.dir(err); 
 } else
@@ -34,19 +34,24 @@ app.get('/api/homepage', function(req, res) {
 
 /* POST Login page. */
 app.post('/api/login', function(req, res) {
-    var collection = db.collection('userscollection');
+    var collection = db.collection('users');
 
     // Get our form values. These rely on the "name" attributes
     var userName = req.body.username;
     var userPassword = req.body.password;
+    var   loginErrorCode = 0;
+    console.log(userName + "\t " + userPassword);
 
-    collection.findOne({username:userName, password:userPassword}, function(err, results) {
+    collection.findOne({username:userName}, function(err, results) {
         if(err) throw err;
+        console.log(results.username);
 
-        if (results == null) {
+        if (results == null || (!bcrypt.compareSync(userPassword, results.password)) ) {
             console.log('not connected');
-            res.redirect('/register');
+            loginErrorCode = 1; // no such username
+            res.redirect('/login?error=' + loginErrorCode);
         } else {
+
             console.log('connected');
             req.session.username = req.body.username;
             console.log('session was opened');
@@ -57,36 +62,53 @@ app.post('/api/login', function(req, res) {
 
 /* POST Register page. */
 app.post('/api/register', function(req, res) {
-    var collection = db.collection('userscollection');
+    var collection = db.collection('users');
 
     //Get our form values. These rely on the "name" attributes
-    var userName = req.body.username;
-    var userPassword = req.body.password;
-    var userEmail = req.body.email;
-
-    // console.log(userName);
-    // console.log(userPassword);
-    // console.log(userEmail);
-
+    var userName     =   req.body.username;
+    var userPassword =   bcrypt.hashSync(req.body.password);
+    var userEmail    =   req.body.email;
+    var registerErrorCode = 0;
     // Submit to the DB
-    collection.insert({username: userName, password: userPassword, email: userEmail}, 
-    function(err, item) {
+    if (userName == '' || userPassword == '' || userEmail == '') {
+        registerErrorCode = 3;
+         res.redirect('/register?error=' + registerErrorCode);
+     } else {
+     collection.findOne({email:userEmail}, function(err, item) {
           if (err) throw err;
-
-          res.redirect('/userlist' );
-       });
-});
+          if (item != null) {
+            registerErrorCode = 1; //email used
+            res.redirect('/register?error=' + registerErrorCode);
+          } else {
+              collection.findOne({username:userName}, function(err, item) {
+                  if (err) throw err;
+                  if (item != null) {
+                    registerErrorCode = 2; //username used
+                    res.redirect('/register?error=' + registerErrorCode);
+                  } else {
+                        collection.insert({username: userName, password: userPassword, email: userEmail}, 
+                        function(err, item) {
+                              if (err) throw err;
+                              req.session.username = userName;
+                              res.redirect('/homepage' );
+                           });
+                    }
+                });
+            }
+    });
+ }
+ });
 
 /* GET Profile page. */
 app.get('/api/profile', function(req, res) {
     var userName = req.session.username;
-    var collection = db.collection('userscollection');
+    var collection = db.collection('users');
 
     collection.findOne({username:userName}, function(err, results) {
         if(err) throw err;
 
         if (results == null) {
-            console.log('user not found');
+            res.redirect("/login");
         } else {
             res.json(results);
         }        
@@ -100,7 +122,24 @@ app.get('/api/logout', function (req, res) {
         
         res.redirect('/homepage');
     });
-})  
+}); 
+app.get('/api/homepage', function(req, res) {
+  var response = {
+    username : 0
+  };
+
+  var collection = db.collection('users');
+
+  if (req.session.username != null) {// session is opened
+    response.username = req.session.username;
+        res.json(response);
+    }
+  
+  else {
+        res.json(response);
+  }
+});
+
 
 /* application */
 app.get('*', function(req, res) {

@@ -25,11 +25,12 @@
 
 		<header>
 			<span ng-if='!username'>
-				<a href='/homepage'>Homepage</a>
+			<!-- 	<a href='/homepage'>Homepage</a> -->
 				<a href='/login'>Login</a>
 				<a href='/register'>Register</a>
 			</span>
 			<span ng-if='username'>
+			<h2>{{username}}</h2>
 				<a href='/homepage'>Homepage</a>
 				<a href='/profile'>Profile</a>
 				<a href='' id='logout'>Logout</a>

@@ -19,5 +19,22 @@
 		</button>
 
 	</form>
+	<div class="error-message" ng-if='errorCode == 1'>
+		<ul>
+			<li>The email is already in use !</li>
+		</ul>
+	</div>
+
+	<div class="validation-message" ng-if='errorCode == 3'>
+		<ul>
+			<li>All fields are mandatory !</li>
+		</ul>
+	</div>
+	<div class="validation-message" ng-if='errorCode == 2'>
+		<ul>
+			<li>Username is already in use !</li>
+		</ul>
+	</div>
+	</div>
 
 </section>

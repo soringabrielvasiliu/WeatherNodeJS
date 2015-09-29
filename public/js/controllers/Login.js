@@ -1,5 +1,7 @@
 angular.module('UsersLibrary')
     .controller('LoginCtrl', ['$scope', '$routeParams', '$http', 'Login', function($scope, $routeParams, $http, Login) {
+       $scope.errorCode = $routeParams.error;
+
     // GET, POST =====================================================================
     // when landing on the page, get/post family details and show them
     // use the service to get/post all the family details

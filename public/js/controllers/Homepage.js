@@ -3,6 +3,7 @@ angular.module('UsersLibrary')
 
     Homepage.get()
     .success(function(data){
+    	console.log(data);
     	if (data.username == 0 && typeof $rootScope.username === 'undefined') {
     		$rootScope.username == '';
     	} else {
