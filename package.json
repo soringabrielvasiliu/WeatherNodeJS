@@ -1,0 +1,20 @@
+{
+  "name": "UsersLibrary",
+  "version": "0.0.1",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "*",
+    "body-parser": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "express": "~4.2.0",
+    "express-session": "*",
+    "mongodb": "*",
+    "morgan": "~1.0.0",
+    "node-cache": "*",
+    "nodemon": "^1.7.0"
+  }
+}

@@ -1,0 +1,35 @@
+<section class="main-wrapper login-main-wrapper">
+	<form class="form-login" method="post" action="/api/login">
+		<h3>Sign in to your account</h3>
+
+		<div class="control-group">
+			<input type="text" class="username" name="username" placeholder="Username" autocomplete="off"/>
+		</div>
+
+		<div class="control-group">
+			<input type="password" class="password" name="password" placeholder="Password"/>
+		</div>
+
+		<div class="form-actions">
+			<label class="checkbox">
+				<input type="checkbox" name="remember" value="1">
+				Remember me
+			</label>	
+			<button type="submit">
+				Login
+			</button>
+		</div>		
+
+		<div class="forget-password">
+			<h4>Forgot your password?</h4>
+			<p>click <a href="#">here </a>to reset your password.</p>
+		</div>		
+
+		<hr>
+
+		<div class="create-account">
+			<p>Don't have an account yet? <a href="/register">Create an account</a></p>
+		</div>
+
+	</form>
+</section>
