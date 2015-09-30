@@ -5,12 +5,26 @@ var fs = require('fs');
 var NodeCache = require( "node-cache" );
 var bcrypt    = require('bcrypt-nodejs');
 var request = require('request');
+var email =  require('emailjs');
 
 var db;
 var MongoClient = require('mongodb').MongoClient;
 
 var apiKey = 'f117b20a12efc3c4c456d7dd24189';
 
+var server  = email.server.connect({
+   user:    "PopcornFlavorReea@gmail.com", 
+   password:"Reea210211", 
+   host:    "smtp.gmail.com", 
+   tls: {ciphers: "SSLv3"}
+});
+
+var message = {
+   text:    "Hello! Please follow the steps above to recover your password. Enter the link below http://localhost:7380/changePassword", 
+   from:     "PopcornFlavorReea@gmail.com",
+   to:     '',
+   subject: "Recover password"
+};
 // Connect to the db
 MongoClient.connect("mongodb://localhost:27017/weather", function(err, database) {
   if(err) { 
@@ -45,20 +59,17 @@ app.post('/api/login', function(req, res) {
     var userName = req.body.username;
     var userPassword = req.body.password;
     var loginErrorCode = 0;
-    console.log(userName + "\t " + userPassword);
+    var   loginErrorCode = 0;
 
     collection.findOne({username:userName}, function(err, results) {
         if(err) throw err;
 
         if (results == null || (!bcrypt.compareSync(userPassword, results.password)) ) {
-            console.log('not connected');
             loginErrorCode = 1; // no such username
             res.redirect('/login?error=' + loginErrorCode);
         } else {
 
-            console.log('connected');
             req.session.username = req.body.username;
-            console.log('session was opened');
             res.redirect('/homepage');
         }        
     });
@@ -124,7 +135,7 @@ app.get('/api/logout', function (req, res) {
     req.session.destroy(function (err) {
         if(err) throw err;
         
-        res.redirect('/homepage');
+        res.redirect('/login');
     });
 }); 
 app.get('/api/homepage', function(req, res) {
@@ -161,6 +172,72 @@ app.get('/api/weather', function (req, res) {
     });
 });
 
+app.post('/api/recovery', function(req, res) {
+  var recoveryErrorCode = 0;
+  message.to = req.body.email;
+  var code =  Math.floor(Math.random() * (625734874 - 1649357) + 1649357);
+  message.text = message.text + "\n Your recovery code is " + code;
+  var collectionUser = db.collection('users');
+  collectionUser.findOne({email: req.body.email}, function(err, response) {
+    if (err) throw err;
+    if (response == null) {
+      recoveryErrorCode = 2; 
+      res.redirect('/recovery?error=' + recoveryErrorCode);// no email
+      }
+      else {
+        server.send(message, function(err, mes) {
+            if (err) { 
+              throw err;
+              recoveryErrorCode = 1; 
+              res.redirect('/recovery?error=' + recoveryErrorCode);
+            }
+            else {
+              var collection = db.collection('recovery');
+              collection.insert({email: req.body.email, code: code}, function (err, response) {
+                if (err) throw err;
+
+               res.redirect('/recovery?error=' + recoveryErrorCode);
+               });
+          }
+        });
+    }
+  });
+
+});
+
+
+app.post('/api/changePassword', function(req, res) {
+  var changePasswordErrorCode = 0;
+
+  var emailCode = parseInt(req.body.emailCode);
+  var email = req.body.email;
+  var password = bcrypt.hashSync(req.body.password);
+
+  var collection = db.collection('recovery');
+ 
+  collection.findOne({code:emailCode, email:email}, function(err, response) {
+    if (err) throw err;
+
+    if(response == null) {
+        changePasswordErrorCode = 1;
+        res.redirect('/changePassword?error=' + changePasswordErrorCode);// no such thing in database
+      }
+      else {
+        var collectionUser = db.collection('users');
+        collectionUser.update({email: email}, {$set: {password: password}}, function(err, response) {
+          if (err) throw err;
+          else 
+            collection.remove({email: email, code:emailCode}, function( err, resp) {
+              if (err) throw err;
+              else
+                 res.redirect('/changePassword?error=' + changePasswordErrorCode);// success in removing from recovery and changing password;
+            });
+            
+        });
+      }
+    
+  });
+});
 /* application */
 app.get('*', function(req, res) {
     res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)

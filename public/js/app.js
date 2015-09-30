@@ -20,6 +20,14 @@ angular.module('UsersLibrary', ['ngCookies', 'ngResource', 'ngMessages', 'ngRout
 				templateUrl: 'views/profile.html',
 				controller: 'ProfileCtrl'
 			})
+			.when('/recovery', {
+				templateUrl: 'views/recovery.html',
+				controller: 'RecoveryCtrl'
+			})
+			.when('/changePassword', {
+				templateUrl: 'views/changePassword.html',
+				controller: 'ChangePasswordCtrl'
+			})
 		  	.otherwise({
 		    	redirectTo: '/homepage'
 		  	});

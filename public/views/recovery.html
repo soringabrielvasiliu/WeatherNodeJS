@@ -1,0 +1,20 @@
+<form method='post' action='/api/recovery'>
+Enter email here <input type='text'  name='email' value='Email'>
+<input type='submit' value='Submit'>
+</form> 
+<div class="error-message" ng-if='errorCode == 1'>
+		<ul>
+			<li>Error at sending email to the address you entered</li>
+		</ul>
+	</div>
+
+	<div class="validation-message" ng-if='errorCode == 0'>
+		<ul>
+			<li>Email an the address above has been sent. Check your email and follow the steps.</li>
+		</ul>
+	</div>
+		<div class="validation-message" ng-if='errorCode == 2'>
+		<ul>
+			<li>This is not a valid email!</li>
+		</ul>
+	</div>
