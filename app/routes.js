@@ -20,7 +20,7 @@ MongoClient.connect("mongodb://localhost:27017/weather", function(err, database)
 });
 
 function daysOfWeek(dayIndex) {
-    return ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][dayIndex];
+    return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][dayIndex];
 }
 
 // expose the routes to our app with module.exports
@@ -151,7 +151,7 @@ app.get('/api/weather', function (req, res) {
             var result = JSON.parse(body);
             if (result.data && typeof result.data.error === 'undefined') {
                 result.data.weather.forEach(function(day) {
-                    day.dayOfWeek = daysOfWeek(new Date(day.date).getDay() - 1);
+                    day.dayOfWeek = daysOfWeek(new Date(day.date).getDay());
                 });
             }
             res.send(result.data);
