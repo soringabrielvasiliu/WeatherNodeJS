@@ -20,7 +20,7 @@ MongoClient.connect("mongodb://localhost:27017/weather", function(err, database)
 });
 
 function daysOfWeek(dayIndex) {
-    return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][dayIndex];
+    return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex];
 }
 
 // expose the routes to our app with module.exports
@@ -44,12 +44,11 @@ app.post('/api/login', function(req, res) {
     // Get our form values. These rely on the "name" attributes
     var userName = req.body.username;
     var userPassword = req.body.password;
-    var   loginErrorCode = 0;
+    var loginErrorCode = 0;
     console.log(userName + "\t " + userPassword);
 
     collection.findOne({username:userName}, function(err, results) {
         if(err) throw err;
-        console.log(results.username);
 
         if (results == null || (!bcrypt.compareSync(userPassword, results.password)) ) {
             console.log('not connected');

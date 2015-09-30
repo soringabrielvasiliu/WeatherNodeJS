@@ -1,6 +1,9 @@
 <section class="main-wrapper register-main-wrapper">
 
 	<form class="form-register" method="post" action="/api/register">
+		<p class="error-message" ng-if='errorCode == 1'>The email is already in use!</p>
+		<p class="validation-message" ng-if='errorCode == 2'>Username is already in use!</p>
+		<p class="validation-message" ng-if='errorCode == 3'>All fields are mandatory!</p>
 		<h3>Sign up</h3>
 		<div class="control-group">
 			<input type="text" class="username" name="username" placeholder="Username">
@@ -19,22 +22,4 @@
 		</button>
 
 	</form>
-	<div class="error-message" ng-if='errorCode == 1'>
-		<ul>
-			<li>The email is already in use !</li>
-		</ul>
-	</div>
-
-	<div class="validation-message" ng-if='errorCode == 3'>
-		<ul>
-			<li>All fields are mandatory !</li>
-		</ul>
-	</div>
-	<div class="validation-message" ng-if='errorCode == 2'>
-		<ul>
-			<li>Username is already in use !</li>
-		</ul>
-	</div>
-	</div>
-
 </section>

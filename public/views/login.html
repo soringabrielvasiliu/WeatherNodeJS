@@ -1,5 +1,6 @@
 <section class="main-wrapper login-main-wrapper">
 	<form class="form-login" method="post" action="/api/login">
+		<p class="error-message" ng-if='errorCode == 1'>Username or password incorrect!</p>
 		<h3>Sign in to your account</h3>
 
 		<div class="control-group">
@@ -32,9 +33,5 @@
 		</div>
 
 	</form>
-		<div class="error-message" ng-if='errorCode == 1'>
-		<ul>
-			<li>Username or password incorrect !</li>
-		</ul>
-	</div>
+	
 </section>
