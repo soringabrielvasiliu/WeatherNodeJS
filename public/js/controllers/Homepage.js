@@ -1,5 +1,5 @@
 angular.module('UsersLibrary')
-    .controller('HomepageCtrl', ['$scope', '$routeParams', '$rootScope', '$location', '$timeout', '$filter', '$http', 'Homepage', function($scope, $routeParams, $rootScope, $location, $timeout, $filter, $http, Homepage) {
+    .controller('HomepageCtrl', ['$scope', '$routeParams', '$rootScope', '$location', '$timeout', '$filter', '$http', 'Homepage', 'Weather', function($scope, $routeParams, $rootScope, $location, $timeout, $filter, $http, Homepage, Weather) {
 
     Homepage.get()
     .success(function(data){
@@ -10,4 +10,10 @@ angular.module('UsersLibrary')
     		$rootScope.username = data.username;
     	}
     });
+
+	Weather.get()
+	.success(function(data) {
+		console.log(data);
+		$rootScope.weather = data;
+	});
 }]);

@@ -4,6 +4,7 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 var fs = require('fs');
 var NodeCache = require( "node-cache" );
 var bcrypt    = require('bcrypt-nodejs');
+var request = require('request');
 
 var db;
 var MongoClient = require('mongodb').MongoClient;
@@ -17,6 +18,10 @@ MongoClient.connect("mongodb://localhost:27017/weather", function(err, database)
 } else
     db = database;
 });
+
+function daysOfWeek(dayIndex) {
+    return ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][dayIndex];
+}
 
 // expose the routes to our app with module.exports
 module.exports = function(app) {
@@ -140,6 +145,22 @@ app.get('/api/homepage', function(req, res) {
   }
 });
 
+app.get('/api/weather', function (req, res) {
+    request('https://api.worldweatheronline.com/free/v2/weather.ashx?q=Iasi&num_of_days=5&tp=24&format=json&key=aa15be85bf9357ca90f879405497d', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var result = JSON.parse(body);
+            if (result.data && typeof result.data.error === 'undefined') {
+                result.data.weather.forEach(function(day) {
+                    day.dayOfWeek = daysOfWeek(new Date(day.date).getDay() - 1);
+                });
+            }
+            res.send(result.data);
+        } else {
+            console.log(error, response.statusCode, body);
+        }
+        res.end("");
+    });
+});
 
 /* application */
 app.get('*', function(req, res) {

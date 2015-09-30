@@ -1,55 +1,24 @@
 <section class="main-wrapper weather-main-wrapper">
 	<section class="weather-info">
-		<h3>City, Country Weather</h3>
+		<h3>{{weather.request[0].query}} Weather</h3>
 		<div class="current-day">
-			<img class="big-img" src="/images/sun.png" alt="big-img">
+			<img class="big-img" src="{{weather.current_condition[0].weatherIconUrl[0].value}}" alt="big-img">
 			<div class="current-info">
-				<p class="temperature">33&#8451; / 33&#x2109;</p>
-				<p>Current: some data</p>
-				<p>Wind: some data</p>
-				<p>Humidity: some data</p>
+				<p class="temperature">{{weather.current_condition[0].temp_C}}&#8451; / {{weather.current_condition[0].temp_F}}&#x2109;</p>
+				<p>Current: {{weather.current_condition[0].weatherDesc[0].value}}</p>
+				<p>Wind: {{weather.current_condition[0].winddir16Point}} at {{weather.current_condition[0].windspeedMiles}} mph/{{weather.current_condition[0].windspeedKmph}}km/h</p>
+				<p>Humidity: {{weather.current_condition[0].humidity}}%</p>
+				<p>Pressure: {{weather.current_condition[0].pressure}} mb</p>
 			</div>
 		</div>
 		<div class="next-days">
-			<span class="day">
+			<span class="day" ng-repeat="day in weather.weather">
 				<div class="day-info">
-					<h5>Day's name</h5>
-					<p>High: 30&#x2109;/30&#8451;</p>
-					<p>Low: 0&#x2109;/0&#8451;</p>
+					<h5>{{day.dayOfWeek}}</h5>
+					<p>High: {{day.maxtempF}}&#x2109;/{{day.maxtempC}}&#8451;</p>
+					<p>Low: {{day.mintempF}}&#x2109;/{{day.mintempC}}&#8451;</p>
 				</div>
-				<img src="/images/sun.png" alt="img">
-			</span>
-			<span class="day">
-				<div class="day-info">
-					<h5>Day's name</h5>
-					<p>High: 30&#x2109;/30&#8451;</p>
-					<p>Low: 0&#x2109;/0&#8451;</p>
-				</div>
-				<img src="/images/sun.png" alt="img">
-			</span>
-			<span class="day">
-				<div class="day-info">
-					<h5>Day's name</h5>
-					<p>High: 30&#x2109;/30&#8451;</p>
-					<p>Low: 0&#x2109;/0&#8451;</p>
-				</div>
-				<img src="/images/sun.png" alt="img">
-			</span>
-			<span class="day">
-				<div class="day-info">
-					<h5>Day's name</h5>
-					<p>High: 30&#x2109;/30&#8451;</p>
-					<p>Low: 0&#x2109;/0&#8451;</p>
-				</div>
-				<img src="/images/sun.png" alt="img">
-			</span>
-			<span class="day">
-				<div class="day-info">
-					<h5>Day's name</h5>
-					<p>High: 30&#x2109;/30&#8451;</p>
-					<p>Low: 0&#x2109;/0&#8451;</p>
-				</div>
-				<img src="/images/sun.png" alt="img">
+				<img src="{{day.hourly[0].weatherIconUrl[0].value}}" alt="img">
 			</span>
 		</div>
 	</section>
