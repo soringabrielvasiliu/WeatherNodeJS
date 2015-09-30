@@ -13,7 +13,6 @@ angular.module('UsersLibrary')
 
 	Weather.get()
 	.success(function(data) {
-		console.log(data);
 		$rootScope.weather = data;
 	});
 }]);
