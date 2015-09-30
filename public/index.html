@@ -19,6 +19,7 @@
 		<script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
 		<script src="http://www.amcharts.com/lib/3/xy.js"></script>
 		<script src="http://www.amcharts.com/lib/3/themes/light.js"></script>
+		<script type="text/javascript" src="/js/backstretch.js"></script>
 	</head>
 
 	<body>
@@ -67,5 +68,17 @@
 		<script src="js/services/Weather.js"></script>
 		<script src="js/services/Profile.js"></script>
 		<!-- Services END -->
+
+		<script>
+		    $.backstretch([
+		      "/images/cloud1.jpg",
+		      "/images/cloud2.jpg",
+		      "/images/cloud3.jpg",
+		      "/images/cloud4.jpg"
+		      ], {
+		        fade: 750,
+		        duration: 4000
+		    });
+		</script>
 	</body>
 </html>

@@ -1,9 +1,4 @@
 body {
-  background: url("/images/cloud_background.jpg") no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
   width: 100%;
   margin: 0;
 }
@@ -120,7 +115,7 @@ header span a {
 }
 .weather-main-wrapper .weather-info h3,
 .weather-main-wrapper .weather-info h5 {
-  color: #639BAD;
+  color: #333333;
 }
 .weather-main-wrapper .weather-info .current-day {
   width: 100%;
