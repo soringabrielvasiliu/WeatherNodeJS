@@ -28,6 +28,10 @@ angular.module('UsersLibrary', ['ngCookies', 'ngResource', 'ngMessages', 'ngRout
 				templateUrl: 'views/changePassword.html',
 				controller: 'ChangePasswordCtrl'
 			})
+			.when('/listWeatherData', {
+				templateUrl: 'views/listWeatherData.html',
+				controller: 'WeatherCtrl'
+			})
 		  	.otherwise({
 		    	redirectTo: '/homepage'
 		  	});

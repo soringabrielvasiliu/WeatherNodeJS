@@ -1,25 +1,39 @@
 <section class="main-wrapper weather-main-wrapper">
 	<section class="weather-info">
-		<h3>{{weather.request[0].query}} Weather</h3>
-		<div class="current-day">
-			<img class="big-img" src="{{weather.current_condition[0].weatherIconUrl[0].value}}" alt="big-img">
-			<div class="current-info">
-				<p class="temperature">{{weather.current_condition[0].temp_C}}&#8451; / {{weather.current_condition[0].temp_F}}&#x2109;</p>
-				<p>Current: {{weather.current_condition[0].weatherDesc[0].value}}</p>
-				<p>Wind: {{weather.current_condition[0].winddir16Point}} at {{weather.current_condition[0].windspeedMiles}} mph/{{weather.current_condition[0].windspeedKmph}}km/h</p>
-				<p>Humidity: {{weather.current_condition[0].humidity}}%</p>
-				<p>Pressure: {{weather.current_condition[0].pressure}} mb</p>
-			</div>
-		</div>
-		<div class="next-days">
-			<span class="day" ng-repeat="day in weather.weather">
-				<div class="day-info">
-					<h5>{{day.dayOfWeek}}</h5>
-					<p>High: {{day.maxtempF}}&#x2109;/{{day.maxtempC}}&#8451;</p>
-					<p>Low: {{day.mintempF}}&#x2109;/{{day.mintempC}}&#8451;</p>
+		<form class="form-inline" role="form">
+			<input ng-model="location" type="text" class="form-control" id="location" placeholder="City">
+			<button ng-click="getWeatherByLocation()" type="submit" class="btn btn-primary">Search</button>
+			<button ng-click="resetWeatherLocation()" type="reset" class="btn btn-info">Reset</button>
+		</form>
+
+		<section ng-if='!weather.cityNotFoundError'>
+			<h3>{{weather.request[0].query}} Weather</h3>
+			<div class="current-day">
+				<img class="big-img" src="{{weather.current_condition[0].weatherIconUrl[0].value}}" alt="big-img">
+				<div class="current-info">
+					<p class="temperature">{{weather.current_condition[0].temp_C}}&#8451; / {{weather.current_condition[0].temp_F}}&#x2109;</p>
+					<p>Current: {{weather.current_condition[0].weatherDesc[0].value}}</p>
+					<p>Wind: {{weather.current_condition[0].winddir16Point}} at {{weather.current_condition[0].windspeedMiles}} mph/{{weather.current_condition[0].windspeedKmph}}km/h</p>
+					<p>Humidity: {{weather.current_condition[0].humidity}}%</p>
+					<p>Pressure: {{weather.current_condition[0].pressure}} mb</p>
 				</div>
-				<img src="{{day.hourly[0].weatherIconUrl[0].value}}" alt="img">
-			</span>
-		</div>
+			</div>
+			<div class="next-days">
+				<span class="day" ng-repeat="day in weather.weather">
+					<div class="day-info">
+						<h5>{{day.dayOfWeek}}</h5>
+						<p>High: {{day.maxtempF}}&#x2109;/{{day.maxtempC}}&#8451;</p>
+						<p>Low: {{day.mintempF}}&#x2109;/{{day.mintempC}}&#8451;</p>
+					</div>
+					<img src="{{day.hourly[0].weatherIconUrl[0].value}}" alt="img">
+				</span>
+			</div>
+		</section>
+
+		<section ng-if='weather.cityNotFoundError'>
+			<h3 class="text-center">This city was not found. Please try again!</h3>
+		</section>
+
+		<a ng-if='username' href="/listWeatherData" class="text-center weather-forecast-visited">See the weather forecast of visited cities.</a>
 	</section>
 </section>

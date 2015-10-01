@@ -1,11 +1,14 @@
 angular.module('UsersLibrary')
-
-	// super simple service
-	// each function returns a promise object 
 	.factory('Weather', ['$http', function($http) {
 		return {
-			get : function() {
+			get : function () {
 				return $http.get('/api/weather');
+			},
+			getAll : function () {
+				return $http.get('/api/allWeatherData');
+			},
+			sendLocation : function (location) {
+				return $http.post('/api/getWeatherByLocation', location);
 			}
 		}
 	}]);
