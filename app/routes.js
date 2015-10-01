@@ -70,6 +70,7 @@ app.post('/api/login', function(req, res) {
         } else {
 
             req.session.username = req.body.username;
+            req.session.cookie.maxAge = 10*60*1000;// 10 minutes
             res.redirect('/homepage');
         }        
     });
@@ -176,7 +177,8 @@ app.post('/api/recovery', function(req, res) {
   var recoveryErrorCode = 0;
   message.to = req.body.email;
   var code =  Math.floor(Math.random() * (625734874 - 1649357) + 1649357);
-  message.text = message.text + "\n Your recovery code is " + code;
+  var initialText = message.text;
+  message.text = message.text + "\n Your recovery code(s) is/are " + code + "\nIf you have more than one recovery key, use one of them, don't panick.";
   var collectionUser = db.collection('users');
   collectionUser.findOne({email: req.body.email}, function(err, response) {
     if (err) throw err;
@@ -202,6 +204,7 @@ app.post('/api/recovery', function(req, res) {
         });
     }
   });
+ // message.text = initialText;
 
 });
 
@@ -227,7 +230,7 @@ app.post('/api/changePassword', function(req, res) {
         collectionUser.update({email: email}, {$set: {password: password}}, function(err, response) {
           if (err) throw err;
           else 
-            collection.remove({email: email, code:emailCode}, function( err, resp) {
+            collection.remove({email: email}, function( err, resp) {
               if (err) throw err;
               else
                  res.redirect('/changePassword?error=' + changePasswordErrorCode);// success in removing from recovery and changing password;
