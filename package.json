@@ -16,6 +16,7 @@
     "morgan": "~1.0.0",
     "node-cache": "*",
     "nodemon": "^1.7.0",
-    "request": "^2.63.0"
+    "request": "^2.63.0",
+    "emailjs": "*"
   }
 }
