@@ -3,7 +3,6 @@ angular.module('UsersLibrary')
 
     Homepage.get()
     .success(function(data){
-        console.log(data);
         if (data.username == 0 && typeof $rootScope.username === 'undefined') {
             $rootScope.username == '';
         } else {
@@ -12,25 +11,7 @@ angular.module('UsersLibrary')
     });
 
     Weather.get()
-    .success(function (data) {
-        $scope.weather = data;
+    .success(function(data) {
+        $rootScope.weather = data;
     });
-
-    $scope.getWeatherByLocation = function () {
-        if ($scope.location != undefined) {
-            Weather.sendLocation({
-                location: $scope.location
-            })
-            .success(function (data) {
-                $scope.weather = data;
-            });
-        }
-    };
-
-    $scope.resetWeatherLocation = function () {
-        Weather.get()
-        .success(function (data) {
-            $scope.weather = data;
-        });
-    };
 }]);

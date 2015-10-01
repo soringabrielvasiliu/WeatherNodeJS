@@ -4,14 +4,13 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 var fs = require('fs');
 var NodeCache = require( "node-cache" );
 var bcrypt    = require('bcrypt-nodejs');
+var request = require('request');
 var email =  require('emailjs');
-
-var request     = require('request');
-var apiKey      = 'f117b20a12efc3c4c456d7dd24189';
-var apiBaseUrl  = 'https://api.worldweatheronline.com/free/v2/weather.ashx';
 
 var db;
 var MongoClient = require('mongodb').MongoClient;
+
+var apiKey = 'f117b20a12efc3c4c456d7dd24189';
 
 var server  = email.server.connect({
    user:    "PopcornFlavorReea@gmail.com", 
@@ -26,7 +25,6 @@ var message = {
    to:     '',
    subject: "Recover password"
 };
-
 // Connect to the db
 MongoClient.connect("mongodb://localhost:27017/weather", function(err, database) {
   if(err) { 
@@ -37,73 +35,6 @@ MongoClient.connect("mongodb://localhost:27017/weather", function(err, database)
 
 function daysOfWeek(dayIndex) {
     return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex];
-}
-
-function getRightWeather(req, res) {
-    if ( typeof req.body.location === 'undefined' ) location = 'Iasi';
-    else location = req.body.location;
-
-    request(apiBaseUrl + '?q=' + location + '&num_of_days=5&tp=24&format=json&key=' + apiKey, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var result = JSON.parse(body);
-
-            if ( result.data && typeof result.data.error === 'undefined' ) {
-                var userId = null;
-
-                if ( typeof req.session.username !== 'undefined') {
-                  db.collection('users').findOne({ username: req.session.username }, function(err, results) {
-                    userId = results._id;
-
-                    result.data.weather.forEach(function (day) {
-                      day.dayOfWeek = daysOfWeek(new Date(day.date).getDay());
-
-                        var collection = db.collection('weathers');
-                        collection.find().sort( { _id : -1 } ).limit(1).toArray(function(err, weatherDBData) {
-                          if (err)
-                            res.send(err);
-
-                          if ( typeof req.body.location !== 'undefined' && ((typeof weatherDBData !== 'undefined' && weatherDBData.length > 0 && weatherDBData[0].location.split(',')[0].toLowerCase() !== req.body.location.toLowerCase()) || (typeof weatherDBData === 'undefined' || weatherDBData.length === 0)) ) {
-                            var location  = result.data.request[0].query;
-                            var type      = result.data.request[0].type;
-                            var date      = day.date;
-                            var dayOfWeek = day.dayOfWeek;
-                            var maxtempC  = day.maxtempC;
-                            var maxtempF  = day.maxtempF;
-                            var mintempC  = day.mintempC;
-                            var mintempF  = day.mintempF;
-
-                            collection.insert({
-                              userId: userId,
-                              location: location,
-                              type: type,
-                              date: date,
-                              dayOfWeek: dayOfWeek,
-                              maxtempC: maxtempC,
-                              maxtempF: maxtempF,
-                              mintempC: mintempC,
-                              mintempF: mintempF
-                            },
-                            function(err, item) {
-                              if (err) throw err;
-                            });
-                          }
-                        });
-                    });
-
-                    res.send(result.data);
-                    res.end("");
-                  });
-                } else {
-                  result.data.weather.forEach(function (day) {
-                    day.dayOfWeek = daysOfWeek(new Date(day.date).getDay());
-                  });
-
-                  res.send(result.data);
-                  res.end("");
-                }
-            } else res.send({cityNotFoundError: 'cityNotFound'});
-        } else console.log(error, response.statusCode, body);
-    });
 }
 
 // expose the routes to our app with module.exports
@@ -226,32 +157,20 @@ app.get('/api/homepage', function(req, res) {
 });
 
 app.get('/api/weather', function (req, res) {
-    getRightWeather(req, res);
-});
-
-app.post('/api/getWeatherByLocation', function (req, res) {
-    getRightWeather(req, res);
-});
-
-app.get('/api/allWeatherData', function (req, res) {
-    var collection = db.collection('weathers');
-
-    if ( typeof req.session.username !== 'undefined') {
-      db.collection('users').findOne({ username: req.session.username }, function(err, results) {
-        userId = results._id;
-
-        collection.find({ userId: userId }).toArray(function(err, results) {
-            if(err)
-              throw err;
-
-            weatherResults = {};
-            weatherResults['weatherRes'] = results;
-            weatherResults['username'] = req.session.username;
-
-            res.json(weatherResults);
-        });
-      });
-    }
+    request('https://api.worldweatheronline.com/free/v2/weather.ashx?q=Iasi&num_of_days=5&tp=24&format=json&key=aa15be85bf9357ca90f879405497d', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var result = JSON.parse(body);
+            if (result.data && typeof result.data.error === 'undefined') {
+                result.data.weather.forEach(function(day) {
+                    day.dayOfWeek = daysOfWeek(new Date(day.date).getDay());
+                });
+            }
+            res.send(result.data);
+        } else {
+            console.log(error, response.statusCode, body);
+        }
+        res.end("");
+    });
 });
 
 app.post('/api/recovery', function(req, res) {
