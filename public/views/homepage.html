@@ -1,20 +1,19 @@
 <section class="main-wrapper weather-main-wrapper">
 	<section class="weather-info">
-		<h3>{{weather.request[0].query}} Weather</h3>
+		<h3>{{weather.data.request[0].query}} Weather</h3>
 		<div class="current-day">
-			<img class="big-img" src="{{weather.current_condition[0].weatherIconUrl[0].value}}" alt="big-img">
+			<img class="big-img" src="{{weather.data.current_condition[0].weatherIconUrl[0].value}}" alt="big-img">
 			<div class="current-info">
-				<p class="temperature">{{weather.current_condition[0].temp_C}}&#8451; / {{weather.current_condition[0].temp_F}}&#x2109;</p>
-				<p>Current: {{weather.current_condition[0].weatherDesc[0].value}}</p>
-				<p>Wind: {{weather.current_condition[0].winddir16Point}} at {{weather.current_condition[0].windspeedMiles}} mph/{{weather.current_condition[0].windspeedKmph}}km/h</p>
-				<p>Humidity: {{weather.current_condition[0].humidity}}%</p>
-				<p>Pressure: {{weather.current_condition[0].pressure}} mb</p>
+				<p class="temperature">{{weather.data.current_condition[0].temp_C}}&#8451; / {{weather.data.current_condition[0].temp_F}}&#x2109;</p>
+				<p>Current: {{weather.data.current_condition[0].weatherDesc[0].value}}</p>
+				<p>Wind: {{weather.data.current_condition[0].windspeedMiles}} mph/{{weather.data.current_condition[0].windspeedKmph}}km/h</p>
+				<p>Humidity: {{weather.data.current_condition[0].humidity}}</p>
 			</div>
 		</div>
 		<div class="next-days">
-			<span class="day" ng-repeat="day in weather.weather">
+			<span class="day" ng-repeat="day in weather.data.weather">
 				<div class="day-info">
-					<h5>{{day.dayOfWeek}}</h5>
+					<h5>{{day.date}}</h5>
 					<p>High: {{day.maxtempF}}&#x2109;/{{day.maxtempC}}&#8451;</p>
 					<p>Low: {{day.mintempF}}&#x2109;/{{day.mintempC}}&#8451;</p>
 				</div>
